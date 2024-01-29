@@ -7,9 +7,19 @@ from typing import List
 ec2_client = boto3.client("ec2")
 
 
-def main(subnet_id: str):
-    print(f"{subnet_id=}")
+def main(vpc_id: str):
+    print(f"{vpc_id=}")
 
+    # get subnet
+
+    subnets = get_subnets(vpc_id)
+    
+    for subnet_id in subnets:
+        print(f"\nProcessing subnet: {subnet_id}")
+        process_subnet(subnet_id)
+
+def process_subnet(subnet_id: str):
+    
     # get cidr ips
     cidr = get_cidr(subnet_id)
     cidr_ips = sorted(map(str, ipaddress.IPv4Network(cidr)))
@@ -36,7 +46,6 @@ def main(subnet_id: str):
     print("-----------")
     print(f"cidr={cidr} cidr_ips={len(cidr_ips)} reserved={len(reserved_ips)} used={len(used_ips)} unused={len(unused_ips)}")
 
-
 def print_list(label: str, target_list: List):
     print(f"{label}=")
     for t in target_list:
@@ -53,11 +62,14 @@ def get_used_ips(subnet_id: str) -> List[str]:
     private_ips = [ip['PrivateIpAddress'] for nw_if in response.get('NetworkInterfaces', []) for ip in nw_if.get('PrivateIpAddresses', [])]
     return private_ips
 
+def get_subnets(vpc_id: str) -> List[str]:
+    response = ec2_client.describe_subnets(Filters=[{'Name': 'vpc-id', 'Values': [vpc_id]}])
+    return [subnet['SubnetId'] for subnet in response.get('Subnets', [])]
 
 if __name__ == '__main__':
     args = sys.argv
     if len(args) == 2:
-        main(subnet_id=args[1])
+        main(vpc_id=args[1])
         sys.exit(0)
 
     else:
