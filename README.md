@@ -2,7 +2,7 @@
 ## For sysadmins and SREs to identify the number of unused IPs
 
 
-`ips.py` is a Python script designed to assist AWS users in identifying and listing unused IP addresses within a specified VPC subnet. By analyzing the CIDR block of the subnet, the script provides detailed information on reserved, used, and unused IP addresses.
+`ips.py` is a Python script designed to assist AWS users in identifying and listing unused IP addresses within all subnets in the specified VPC . By analyzing subnets in VPC, the CIDR block of the subnet, the script provides detailed information on reserved, used, and unused IP addresses.
 
 ## Prerequisites
 Ensure you have the following prerequisites before running the script:
@@ -13,14 +13,14 @@ Ensure you have the following prerequisites before running the script:
 Export the AWS credentials to your working terminal.
 ```bash
 export AWS_ACCESS_KEY_ID={access_key}
-export AWS_SECRET_ACCESS_KEY={secret_key
+export AWS_SECRET_ACCESS_KEY={secret_key}
 export AWS_DEFAULT_REGION={region name}
 ```
 Run:
 ```bash
-python describe_unused_ips.py {subnet-id}
+python describe_unused_ips.py {vpc-id}
 ```
-- {subnet-id}: The ID of the VPC subnet you want to analyze.
+- {vpc-id}: The ID of the VPC you want to analyze.
 
 
 ## Output
